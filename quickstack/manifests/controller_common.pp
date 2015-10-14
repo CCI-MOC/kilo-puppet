@@ -133,6 +133,10 @@ class quickstack::controller_common (
   $ceph_enpoints		 = $quickstack::params::ceph_endpoints,
   $ceph_user			 = $quickstack::params::ceph_user,
   $ceph_vlan                     = $quickstack::params::ceph_vlan,
+  $sensu_rabbitmq_host           = $quickstack::params::sensu_rabbitmq_host,
+  $sensu_rabbitmq_user           = $quickstack::params::sensu_rabbitmq_user,
+  $sensu_rabbitmq_password       = $quickstack::params::sensu_rabbitmq_password,
+  $sensu_client_subscriptions_controller   = ['moc-sensu','openstack-api','openstack-metrics']
 ) inherits quickstack::params {
 
   class {'quickstack::openstack_common': }
@@ -613,4 +617,36 @@ class quickstack::controller_common (
     ceph_user      => $ceph_user, 
     ceph_vlan      => $ceph_vlan,
 }
+
+#Customization for isntalling sensu
+  class { '::sensu':
+    sensu_plugin_name => 'sensu-plugin',
+    sensu_plugin_version => 'installed',
+    sensu_plugin_provider => 'gem',
+    purge_config => true,
+    rabbitmq_host => $sensu_rabbitmq_host,
+    rabbitmq_user => $sensu_rabbitmq_user,
+    rabbitmq_password => $sensu_rabbitmq_password,
+    rabbitmq_vhost => '/sensu',
+    subscriptions => $sensu_client_subscriptions_controller,
+    plugins       => [
+       "puppet:///modules/sensu/plugins/check-ip-connectivity.sh",
+       "puppet:///modules/sensu/plugins/check-mem.sh",
+       "puppet:///modules/sensu/plugins/cpu-metrics.rb",
+       "puppet:///modules/sensu/plugins/disk-usage-metrics.rb",
+       "puppet:///modules/sensu/plugins/load-metrics.rb",
+       "puppet:///modules/sensu/plugins/ceph-osd-metrics.rb",
+       "puppet:///modules/sensu/plugins/check-ceph.rb",
+       "puppet:///modules/sensu/plugins/check-disk-fail.rb",
+       "puppet:///modules/sensu/plugins/memory-metrics.rb",
+       "puppet:///modules/sensu/plugins/uptime-metrics.py",
+       "puppet:///modules/sensu/plugins/check_keystone-api.sh",
+       "puppet:///modules/sensu/plugins/check_neutron-api.py",
+       "puppet:///modules/sensu/plugins/keystone-token-metrics.rb",
+       "puppet:///modules/sensu/plugins/neutron-agent-status.py",
+       "puppet:///modules/sensu/plugins/nova-hypervisor-metrics.py",
+       "puppet:///modules/sensu/plugins/nova-server-state-metrics.py"
+    ]
+  }
+
 }
