@@ -31,7 +31,7 @@ class quickstack::params (
   $ceph_endpoints,
   $ceph_user,
   $nova_uuid,
-  $rbd_key,
+  $ceph_key,
   $ceph_iface,
   $ceph_vlan,
   
@@ -55,7 +55,9 @@ class quickstack::params (
   $glance_priv_url,
   $glance_admin_url,
   # cinder
-  # *Cinder is still using pub protocol, address, and port*
+  $cinder_pub_url,
+  $cinder_priv_url,
+  $cinder_admin_url,
   # neutron
   $neutron_pub_url,
   $neutron_priv_url,
@@ -340,10 +342,17 @@ class quickstack::params (
   $gluster_volume3_name,
   $gluster_volume3_path,
   $gluster_volume3_uid,
+
   # sensu server
   $sensu_rabbitmq_host,
   $sensu_rabbitmq_user,
   $sensu_rabbitmq_password,
 
+  # Firewall
+  $source,
+
+  #NTP
+  $ntp_public_servers,
+  $ntp_local_servers,
 ) {
 }

@@ -82,6 +82,9 @@ class quickstack::controller_common (
   $neutron_admin_url             = $quickstack::params::neutron_admin_url,
   $neutron_priv_url              = $quickstack::params::neutron_priv_url,
   $neutron_pub_url               = $quickstack::params::neutron_pub_url,
+  $cinder_admin_url              = $quickstack::params::cinder_admin_url,
+  $cinder_priv_url               = $quickstack::params::cinder_priv_url,
+  $cinder_pub_url                = $quickstack::params::cinder_pub_url,
   #
 
   $glance_db_password            = $quickstack::params::glance_db_password,
@@ -159,6 +162,8 @@ class quickstack::controller_common (
   $glance_cert                   = $quickstack::params::glance_cert,
   $neutron_key                   = $quickstack::params::neutron_key,
   $neutron_cert                  = $quickstack::params::neutron_cert,
+  $source                        = $quickstack::params::source,
+  $ntp_public_servers            = $quickstack::params::ntp_public_servers,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl_endpoints") {
@@ -335,6 +340,9 @@ class quickstack::controller_common (
     neutron_admin_url       => $neutron_admin_url,
     neutron_priv_url        => $neutron_priv_url,
     neutron_pub_url         => $neutron_pub_url,
+    cinder_admin_url        => $cinder_admin_url,
+    cinder_priv_url         => $cinder_priv_url,
+    cinder_pub_url          => $cinder_pub_url,
 
     glance_public_address   => $controller_pub_host,
     glance_admin_address    => $controller_admin_host,
@@ -775,5 +783,10 @@ class quickstack::controller_common (
 
   class { 'moc_openstack::firewall':
     interface => $ceph_iface,
+    source    => $source,
+  }
+
+  class {'quickstack::ntp':
+    servers => $ntp_public_servers,
   }
 }

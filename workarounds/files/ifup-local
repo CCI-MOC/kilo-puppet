@@ -6,12 +6,25 @@
 # https://access.redhat.com/solutions/8694
 #
 
+# rahul - all interfaces attached to br-ex are also brought up
+#         when we bring up br-ex
+
 case "$1" in
 
 # for any interface using the ixgbe driver (i.e. em*) turn off Large
 # Receive Offload - see 
 # https://access.redhat.com/support/cases/#/case/01326984
   e*) /sbin/ethtool -K $1 lro off
+  ;;
+  br-ex) DIR="/etc/sysconfig/network-scripts"
+         TEXT="OVS_BRIDGE=br-ex"
+         INTERFACES=$(grep -lr $TEXT $DIR | awk -F "ifcfg-" '{print $NF}')
+
+         for i in "${INTERFACES[@]}"
+         do
+           /sbin/ifup $i
+         done
+  ;;
 
 esac
 

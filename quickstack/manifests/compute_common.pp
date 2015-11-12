@@ -89,6 +89,8 @@ class quickstack::compute_common (
   $sensu_rabbitmq_user          = $quickstack::params::sensu_rabbitmq_user,
   $sensu_rabbitmq_password      = $quickstack::params::sensu_rabbitmq_password,
   $sensu_client_subscriptions_compute = 'moc-sensu',
+  $source                       = $quickstack::params::source,
+  $ntp_local_servers            = $quickstack::params::ntp_local_servers,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl") {
@@ -360,6 +362,7 @@ class quickstack::compute_common (
 
   class { 'moc_openstack::firewall':
            interface => $ceph_iface,
+           source    => $source,
         }
 
 # Ensure ruby has lastest version
@@ -398,6 +401,10 @@ class quickstack::compute_common (
        "puppet:///modules/sensu/plugins/nova-server-state-metrics.py",
        "puppet:///modules/sensu/plugins/cpu-pcnt-usage-metrics.rb"
     ]
+  }
+
+  class {'quickstack::ntp':
+    servers => $ntp_local_servers,
   }
 
 }

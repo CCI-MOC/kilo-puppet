@@ -96,9 +96,9 @@ class cinder::keystone::auth (
   $port                  = '8776',
   $volume_version        = 'v1',
   $region                = 'RegionOne',
-  $public_protocol       = 'http',
-  $admin_protocol        = 'http',
-  $internal_protocol     = 'http'
+  $public_url            = 'http://127.0.0.1:8776',
+  $admin_url             = 'http://127.0.0.1:8776',
+  $internal_url          = 'http://127.0.0.1:8776'
 ) {
   if $service_name {
     $real_service_name = $service_name
@@ -126,9 +126,9 @@ class cinder::keystone::auth (
     password            => $password,
     email               => $email,
     tenant              => $tenant,
-    public_url          => "${public_protocol}://${public_address}:${port}/${volume_version}/%(tenant_id)s",
-    admin_url           => "${admin_protocol}://${admin_address}:${port}/${volume_version}/%(tenant_id)s",
-    internal_url        => "${internal_protocol}://${internal_address}:${port}/${volume_version}/%(tenant_id)s",
+    public_url          => "${public_url}/${volume_version}/%(tenant_id)s",
+    admin_url           => "${admin_url}/${volume_version}/%(tenant_id)s",
+    internal_url        => "${internal_url}/${volume_version}/%(tenant_id)s",
   }
 
   keystone::resource::service_identity { 'cinderv2':
@@ -139,9 +139,9 @@ class cinder::keystone::auth (
     service_description => 'Cinder Service v2',
     service_name        => $real_service_name_v2,
     region              => $region,
-    public_url          => "${public_protocol}://${public_address}:${port}/v2/%(tenant_id)s",
-    admin_url           => "${admin_protocol}://${admin_address}:${port}/v2/%(tenant_id)s",
-    internal_url        => "${internal_protocol}://${internal_address}:${port}/v2/%(tenant_id)s",
+    public_url          => "${public_url}/v2/%(tenant_id)s",
+    admin_url           => "${admin_url}/v2/%(tenant_id)s",
+    internal_url        => "${internal_url}/v2/%(tenant_id)s",
   }
 
   if $configure_user_role {

@@ -33,7 +33,7 @@ class quickstack::cinder(
   $key_file        = '/etc/pki/tls/private/cinder.key',
   $ca_file         = '/etc/pki/ca-trust/source/anchors/rootCA.crt',
   $use_ssl         = false,
-  $nova_pub_url    = 'http://localhost:8776/',
+  $nova_pub_url    = 'http://localhost:8774/',
 ) {
   include ::quickstack::firewall::cinder
 

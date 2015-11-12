@@ -130,7 +130,7 @@ class cinder::api (
   $keystone_user              = 'cinder',
   $auth_uri                   = false,
   $identity_uri               = false,
-  $nova_endpoint_template     = 'http://127.0.0.1:8776/',
+  $nova_endpoint_template     = 'http://127.0.0.1:8774/',
   $os_region_name             = undef,
   $service_workers            = $::processorcount,
   $package_ensure             = 'present',

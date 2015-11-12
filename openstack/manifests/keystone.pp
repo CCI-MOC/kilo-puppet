@@ -110,6 +110,9 @@ class openstack::keystone (
   $neutron_admin_url           = false,
   $neutron_priv_url            = false,
   $neutron_pub_url             = false,
+  $cinder_admin_url            = false,
+  $cinder_priv_url             = false,
+  $cinder_pub_url              = false,
   # nova
   $nova                        = true,
   $nova_user_password,
@@ -390,9 +393,9 @@ class openstack::keystone (
       class { 'cinder::keystone::auth':
         password          => $cinder_user_password,
         public_address    => $cinder_public_real,
-        public_protocol   => $public_protocol,
-        internal_protocol => $internal_protocol,
-        admin_protocol    => $admin_protocol,
+        public_url        => $cinder_pub_url,
+        internal_url      => $cinder_priv_url,
+        admin_url         => $cinder_admin_url,
         admin_address     => $cinder_admin_real,
         internal_address  => $cinder_internal_real,
         region            => $region,
