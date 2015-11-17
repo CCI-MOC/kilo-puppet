@@ -31,6 +31,8 @@ class quickstack::neutron::compute (
   $nova_host                    = $quickstack::params::controller_pub_host,
   $enable_tunneling             = $quickstack::params::enable_tunneling,
   $mysql_host                   = $quickstack::params::mysql_host,
+  $neutron_db_user              = 'neutron',
+  $neutron_db_dbname            = 'neutron',
   $neutron_db_password          = $quickstack::params::neutron_db_password,
   $neutron_user_password        = $quickstack::params::neutron_user_password,
   $neutron_host                 = $quickstack::params::controller_pub_host,
@@ -103,15 +105,15 @@ class quickstack::neutron::compute (
     }
 
     if str2bool_i("$mysql_ssl") {
-      $sql_connection = "mysql://neutron:${neutron_db_password}@${mysql_host}/neutron?ssl_ca=${mysql_ca}"
+      $sql_connection = "mysql://${neutron_db_user}:${neutron_db_password}@${mysql_host}/${neutron_db_dbname}?ssl_ca=${mysql_ca}"
     } else {
-      $sql_connection = "mysql://neutron:${neutron_db_password}@${mysql_host}/neutron"
+      $sql_connection = "mysql://${neutron_db_user}:${neutron_db_password}@${mysql_host}/${neutron_db_dbname}"
     }
 
   } else {
     $qpid_protocol = 'tcp'
     $real_amqp_port = $amqp_port
-    $sql_connection = "mysql://neutron:${neutron_db_password}@${mysql_host}/neutron"
+    $sql_connection = "mysql://${neutron_db_user}:${neutron_db_password}@${mysql_host}/${neutron_db_dbname}"
   }
 
   # empty array is true in puppet, so deal with that case the long

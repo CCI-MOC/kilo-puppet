@@ -383,7 +383,7 @@ class quickstack::neutron::controller (
     auth_protocol       => $auth_protocol,
     auth_uri            => $keystone_pub_url,
     auth_password       => $neutron_user_password,
-    database_connection => $sql_connection,
+    #database_connection => $sql_connection,
     #sql_connection     => false,
   }
 

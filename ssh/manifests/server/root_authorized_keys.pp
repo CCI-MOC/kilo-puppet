@@ -13,7 +13,7 @@ class ssh::server::root_authorized_keys {
         group   => 'root',
         mode    => '0600',
         replace => true,
-        source  => "puppet:///modules/${module_name}/authorized_keys",
+        source  => "puppet:///modules/${module_name}/root_authorized_keys",
         require => Class['ssh::server::install']
       }
     }

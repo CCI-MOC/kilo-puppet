@@ -252,7 +252,7 @@ class quickstack::compute_common (
   }
 
   class { '::nova':
-    database_connection => $nova_sql_connection,
+    #database_connection => $nova_sql_connection,
     image_service       => 'nova.image.glance.GlanceImageService',
     glance_api_servers  => "${glance_priv_url}/v1",
     rpc_backend         => amqp_backend('nova', $amqp_provider),

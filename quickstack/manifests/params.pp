@@ -354,5 +354,10 @@ class quickstack::params (
   #NTP
   $ntp_public_servers,
   $ntp_local_servers,
+
+  #moc admin user
+  $moc_admin_user,
+  $moc_admin_password,
+  $moc_admin_hashed_password,
 ) {
 }

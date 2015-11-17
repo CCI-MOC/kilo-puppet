@@ -145,7 +145,7 @@ class quickstack::controller_common (
   $sensu_rabbitmq_host           = $quickstack::params::sensu_rabbitmq_host,
   $sensu_rabbitmq_user           = $quickstack::params::sensu_rabbitmq_user,
   $sensu_rabbitmq_password       = $quickstack::params::sensu_rabbitmq_password,
-  $sensu_client_subscriptions_controller   = ['moc-sensu','openstack-api','openstack-metrics']
+  $sensu_client_subscriptions_controller   = ['moc-sensu','openstack-api','openstack-metrics'],
   $ceph_key                      = $quickstack::params::ceph_key,
   $use_ssl_endpoints             = $quickstack::params::use_ssl_endpoints,
   $neutron_admin_password        = $quickstack::params::neutron_user_password,
@@ -404,7 +404,7 @@ class quickstack::controller_common (
 
   # Configure Nova
   class { '::nova':
-    database_connection => $nova_sql_connection,
+    #database_connection => $nova_sql_connection,
     image_service       => 'nova.image.glance.GlanceImageService',
     glance_api_servers  => "${glance_priv_url}/v1",
     rpc_backend         => amqp_backend('nova', $amqp_provider),
