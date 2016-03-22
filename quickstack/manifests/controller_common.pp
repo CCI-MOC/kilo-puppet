@@ -167,6 +167,8 @@ class quickstack::controller_common (
   $public_net                    = $quickstack::params::public_net,
   $private_net                   = $quickstack::params::private_net,
   $ntp_public_servers            = $quickstack::params::ntp_public_servers,
+  $allow_resize_to_same_host     = $quickstack::params::allow_resize,
+  $allow_migrate_to_same_host    = $quickstack::params::allow_migrate,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl_endpoints") {
@@ -432,7 +434,9 @@ class quickstack::controller_common (
   }
 
   nova_config {
-    'DEFAULT/default_floating_pool': value => $nova_default_floating_pool;
+    'DEFAULT/default_floating_pool':      value => $nova_default_floating_pool;
+    'DEFAULT/allow_resize_to_same_host':  value => $allow_resize_to_same_host;
+    'DEFAULT/allow_migrate_to_same_host': value => $allow_migrate_to_same_host;
   }
 
   if str2bool_i("$neutron") {

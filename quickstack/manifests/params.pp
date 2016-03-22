@@ -360,5 +360,9 @@ class quickstack::params (
 
   #moc allowed users
   $moc_users,
+
+  # Allow instance resize
+  $allow_resize,
+  $allow_migrate,
 ) {
 }
