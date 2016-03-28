@@ -393,6 +393,14 @@ class quickstack::controller_common (
     admin_address    => $swift_admin_url
   }
 
+  class { 'ceilometer::keystone::auth': 
+    password         => $quickstack::params::ceilometer_user_password,
+    email            => 'ceilometer@bu.edu',
+    public_url       => $quickstack::params::ceilometer_url,
+    admin_url        => $quickstack::params::ceilometer_url,
+    internal_url     => $quickstack::params::ceilometer_url,
+  }
+
   class {'quickstack::glance':
     db_host        => $mysql_host,
     db_ssl         => $mysql_ssl,
