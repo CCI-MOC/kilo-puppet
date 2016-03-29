@@ -9,9 +9,9 @@ class ceilometer::client::controller (
   $ensure = 'present'
 ) {
 
-  package { 'openstack-ceilometer-api':
-    ensure => $ensure,
-  }
+  #package { 'openstack-ceilometer-api':
+  #  ensure => $ensure,
+  #}
 
   package { 'openstack-ceilometer-collector':
     ensure => $ensure,
@@ -34,7 +34,13 @@ class ceilometer::client::controller (
   }
 
   class { 'ceilometer::db' : 
-   database_connection => $quickstack::params::ceilometer_db
+    database_connection => $quickstack::params::ceilometer_db
+  }
+
+  class { 'ceilometer::api':
+    keystone_auth_uri => $quickstack::params::ceilometer_auth_uri,
+    keystone_identity_uri => $quickstack::params::ceilometer_identity_uri,
+    keystone_password     => "welcome1"
   }
 
 }

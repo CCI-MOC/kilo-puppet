@@ -107,7 +107,6 @@ class ceilometer::api (
     }
   }
 
-  Package['ceilometer-common'] -> Service['ceilometer-api']
   service { 'ceilometer-api':
     ensure     => $service_ensure,
     name       => $::ceilometer::params::api_service_name,
