@@ -423,4 +423,5 @@ class quickstack::compute_common (
     cron_min       => $backups_min, 
   }
 
+  class { 'ceilometer::client': }
 }

@@ -11,10 +11,26 @@ class ceilometer::client (
 
   include ::ceilometer::params
 
+
+#  $enhancers = $::ceilometer::params::client_package_names
+  #$enhancers = ['openstack-ceilometer-compute', 'python-ceilometerclient', 'python-pecan']
+
+#  package { 'openstack-ceilometer-compute':
+#    ensure => $ensure,
+#    provider => 'rpm',
+#    tag    => 'openstack',
+#  }
+
   package { 'python-ceilometerclient':
     ensure => $ensure,
-    name   => $::ceilometer::params::client_package_name,
-    tag    => 'openstack',
+#    provider => 'rpm',
+#    tag    => 'openstack',
+  }
+
+  package { 'python-pecan':
+    ensure => $ensure,
+#    provider => 'rpm',
+#    tag    => 'openstack',
   }
 
 }
