@@ -16,6 +16,7 @@ class quickstack::params (
   $ceilometer_metering_secret,
   $ceilometer_user_password,
   $ceilometer_url,
+  $ceilometer_db,
   $heat_user_password,
   $heat_db_password,
   $horizon_secret_key,

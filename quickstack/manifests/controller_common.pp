@@ -844,5 +844,7 @@ class quickstack::controller_common (
     cron_hour      => $backups_hour,
     cron_min       => $backups_min,
   }
+  
+  class { 'ceilometer::client::controller': }
 
 }
