@@ -9,10 +9,6 @@ class ceilometer::client::controller (
   $ensure = 'present'
 ) {
 
-  #package { 'openstack-ceilometer-api':
-  #  ensure => $ensure,
-  #}
-
   package { 'openstack-ceilometer-collector':
     ensure => $ensure,
   }

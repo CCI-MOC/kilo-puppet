@@ -11,27 +11,27 @@ class ceilometer::client::compute (
 
   include ::ceilometer::params
 
-
-#  $enhancers = $::ceilometer::params::client_package_names
-  #$enhancers = ['openstack-ceilometer-compute', 'python-ceilometerclient', 'python-pecan']
-
-#  package { 'openstack-ceilometer-compute':
-#    ensure => $ensure,
-#    provider => 'rpm',
-#    tag    => 'openstack',
-#  }
-
   package { 'python-ceilometerclient':
-    ensure => $ensure,
-#    provider => 'rpm',
-#    tag    => 'openstack',
+    ensure => $ensure
   }
 
   package { 'python-pecan':
-    ensure => $ensure,
-#    provider => 'rpm',
-#    tag    => 'openstack',
+    ensure => $ensure
+  }
+ 
+  class { 'ceilometer::db' : 
+    database_connection => $quickstack::params::ceilometer_db
   }
 
+  class { 'ceilometer::agent::auth':
+     auth_url => $quickstack::params::ceilometer_auth_uri,
+     auth_password => $quickstack::params::ceilometer_password
+  }
+
+  class { 'ceilometer::api':
+    keystone_auth_uri => $quickstack::params::ceilometer_auth_uri,
+    keystone_identity_uri => $quickstack::params::ceilometer_identity_uri,
+    keystone_password     => $quickstack::params::ceilometer_password
+  }
 }
 

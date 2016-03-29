@@ -329,11 +329,6 @@ class quickstack::compute_common (
       verbose         => $verbose,
     }
 
-    class { 'ceilometer::agent::auth':
-      auth_url      => "${auth_protocol}://${auth_host}:35357/v2.0",
-      auth_password => $ceilometer_user_password,
-    }
-
     class { 'ceilometer::agent::compute':
       enabled => true,
     }
