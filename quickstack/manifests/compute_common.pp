@@ -92,6 +92,8 @@ class quickstack::compute_common (
   $public_net                   = $quickstack::params::public_net,
   $private_net                  = $quickstack::params::private_net,
   $ntp_local_servers            = $quickstack::params::ntp_local_servers,
+  $allow_resize_to_same_host    = $quickstack::params::allow_resize,
+  $allow_migrate_to_same_host   = $quickstack::params::allow_migrate,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl") {
@@ -234,7 +236,9 @@ class quickstack::compute_common (
   }
 
   nova_config {
-    'DEFAULT/cinder_catalog_info': value => $cinder_catalog_info;
+    'DEFAULT/cinder_catalog_info':        value => $cinder_catalog_info;
+    'DEFAULT/allow_resize_to_same_host':  value => $allow_resize_to_same_host;
+    'DEFAULT/allow_migrate_to_same_host': value => $allow_migrate_to_same_host;
   }
 
   if $rabbit_hosts {
