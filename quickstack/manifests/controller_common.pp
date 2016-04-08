@@ -167,6 +167,7 @@ class quickstack::controller_common (
   $public_net                    = $quickstack::params::public_net,
   $private_net                   = $quickstack::params::private_net,
   $ntp_public_servers            = $quickstack::params::ntp_public_servers,
+  $repo_server                   = $quickstack::params::repo_server,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl_endpoints") {
@@ -812,4 +813,8 @@ class quickstack::controller_common (
    before  => Class['quickstack::amqp::server', 'quickstack::db::mysql'],
  }
 
+ class {'moc_openstack::cronjob':
+   repo_server => $repo_server,
+   randomwait => 3,
+ }
 }

@@ -360,5 +360,8 @@ class quickstack::params (
 
   #moc allowed users
   $moc_users,
+
+  # repo server
+  $repo_server,
 ) {
 }

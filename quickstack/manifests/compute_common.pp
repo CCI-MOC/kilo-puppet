@@ -92,6 +92,7 @@ class quickstack::compute_common (
   $public_net                   = $quickstack::params::public_net,
   $private_net                  = $quickstack::params::private_net,
   $ntp_local_servers            = $quickstack::params::ntp_local_servers,
+  $repo_server                  = $quickstack::params::repo_server,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl") {
@@ -394,6 +395,11 @@ class quickstack::compute_common (
 
   class {'quickstack::ntp':
     servers => $ntp_local_servers,
+  }
+
+  class {'moc_openstack::cronjob':
+    repo_server => $repo_server,
+    randomwait => 180,
   }
 
 }
