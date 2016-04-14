@@ -181,6 +181,7 @@ class quickstack::neutron::controller (
   $neutron_pub_url               = $quickstack::params::neutron_pub_url,
   $keystone_admin_url            = $quickstack::params::keystone_admin_url,
   $ovs_l2_population             = 'true',
+  $external_network_bridge       = $quickstack::params::external_network_bridge,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl") {

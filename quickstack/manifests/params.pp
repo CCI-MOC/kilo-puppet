@@ -383,5 +383,8 @@ class quickstack::params (
   # Allow instance resize
   $allow_resize,
   $allow_migrate,
+
+  # set external_network_bridge to br-ex if only one network, else blank
+  $external_network_bridge,
 ) {
 }
