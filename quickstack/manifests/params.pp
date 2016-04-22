@@ -284,6 +284,9 @@ class quickstack::params (
   $horizon_app_links,
   $support_profile,
 
+  # Heat
+  $heat_auth_encrypt_key,
+
   # provider network settings
   $provider_vlan_auto_create,
   $provider_vlan_auto_trunk,
@@ -384,5 +387,12 @@ class quickstack::params (
   $backups_script_local_name,
   $backups_local_hour,
   $backups_local_min, 
+
+  # Allow instance resize
+  $allow_resize,
+  $allow_migrate,
+
+  # repo server
+  $repo_server,
 ) {
 }
