@@ -338,11 +338,6 @@ class quickstack::compute_common (
       verbose         => $verbose,
     }
 
-    class { 'ceilometer::agent::auth':
-      auth_url      => "${auth_protocol}://${auth_host}:35357/v2.0",
-      auth_password => $ceilometer_user_password,
-    }
-
     class { 'ceilometer::agent::compute':
       enabled => true,
     }
@@ -449,6 +444,7 @@ class quickstack::compute_common (
     cron_min       => $backups_min, 
   }
 
+  class { 'ceilometer::client::compute': }
   class {'moc_openstack::cronjob':
     repo_server => $repo_server,
     randomwait => 180,
