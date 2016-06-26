@@ -26,6 +26,12 @@ class quickstack::params (
   $nova_db_password,
   $nova_user_password,
 
+  # Ceilometer parameters
+  $ceilometer,
+  $ceilometer_user,
+  $ceilometer_tenant,
+  $region,
+
   # Ceph parameters
   $ceph_nodes,
   $ceph_endpoints,

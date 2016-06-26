@@ -139,6 +139,7 @@ class openstack::keystone (
   $neutron_admin_address       = false,
   # ceilometer
   $ceilometer                  = false,
+  $ceilometer_user             = false,
   $ceilometer_user_password    = false,
   $ceilometer_public_address   = false,
   $ceilometer_internal_address = false,
@@ -424,6 +425,7 @@ class openstack::keystone (
       }
 
       class { 'ceilometer::keystone::auth':
+        auth_name        => $ceilometer_user,
         password         => $ceilometer_user_password,
         public_address   => $ceilometer_public_real,
         public_protocol  => $public_protocol,

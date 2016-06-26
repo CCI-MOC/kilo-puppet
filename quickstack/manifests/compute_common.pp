@@ -18,7 +18,10 @@ class quickstack::compute_common (
   $amqp_username                = $quickstack::params::amqp_username,
   $amqp_ssl_port                = '5671',
   $auth_host                    = $quickstack::params::controller_pub_host,
+  $region                       = $quickstack::params::region,
   $ceilometer                   = 'false',
+  $ceilometer_user              = $quickstack::params::ceilometer_user,
+  $ceilometer_tenant            = $quickstack::params::ceilometer_tenant,
   $ceilometer_metering_secret   = $quickstack::params::ceilometer_metering_secret,
   $ceilometer_user_password     = $quickstack::params::ceilometer_user_password,
   $manage_ceph_conf             = false,
@@ -342,8 +345,11 @@ class quickstack::compute_common (
     }
 
     class { 'ceilometer::agent::auth':
-      auth_url      => "${auth_protocol}://${auth_host}:35357/v2.0",
-      auth_password => $ceilometer_user_password,
+      auth_region      => $region,
+      auth_user        => $ceilometer_user,
+      auth_tenant_name => $ceilometer_tenant,
+      auth_url         => "${auth_protocol}://${auth_host}:35357/v2.0",
+      auth_password    => $ceilometer_user_password,
     }
 
     class { 'ceilometer::agent::compute':

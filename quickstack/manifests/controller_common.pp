@@ -2,6 +2,8 @@
 class quickstack::controller_common (
   $admin_email                   = $quickstack::params::admin_email,
   $admin_password                = $quickstack::params::admin_password,
+  $ceilometer                    = $quickstack::params::ceilometer_enabled,
+  $ceilometer_user               = $quickstack::params::ceilometer_user,
   $ceilometer_metering_secret    = $quickstack::params::ceilometer_metering_secret,
   $ceilometer_user_password      = $quickstack::params::ceilometer_user_password,
   $ceph_cluster_network          = '',
@@ -385,6 +387,13 @@ class quickstack::controller_common (
     neutron_public_address   => $controller_pub_host,
     neutron_admin_address    => $controller_admin_host,
     neutron_internal_address => $controller_priv_host,
+
+    # Ceilometer user config settings
+    #
+    $ceilometer                 => $ceilometer_enabled,
+    $ceilometer_user            => $ceilometer_user,
+    $ceilometer_metering_secret => $ceilometer_metering_secret,
+    $ceilometer_user_password   => $ceilometer_user_password,
 
     neutron                 => str2bool_i("$neutron"),
     enabled                 => true,
