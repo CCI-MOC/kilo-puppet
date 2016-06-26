@@ -101,8 +101,7 @@ class quickstack::controller_common (
   $heat_cloudwatch               = $quickstack::params::heat_cloudwatch,
   $heat_db_password              = $quickstack::params::heat_db_password,
   $heat_user_password            = $quickstack::params::heat_user_password,
-  #Was breaking puppet
-  #$heat_auth_encrypt_key,
+  $heat_auth_encrypt_key         = $quickstack::params::heat_auth_encrypt_key,
   $horizon_secret_key            = $quickstack::params::horizon_secret_key,
   $keystone_admin_token          = $quickstack::params::keystone_admin_token,
   $keystone_db_password          = $quickstack::params::keystone_db_password,
@@ -171,18 +170,23 @@ class quickstack::controller_common (
   $public_net                    = $quickstack::params::public_net,
   $private_net                   = $quickstack::params::private_net,
   $ntp_public_servers            = $quickstack::params::ntp_public_servers,
+  $backups_enabled		 = $quickstack::params::backups_enabled,
   $backups_user                  = $quickstack::params::backups_user,
   $backups_script_src            = $quickstack::params::backups_script_controller,
   $backups_script_local		 = $quickstack::params::backups_script_local_name,
   $backups_dir                   = $quickstack::params::backups_directory,
   $backups_log                   = $quickstack::params::backups_log,
+  $backups_verbose      	 = $quickstack::params::backups_verbose,
   $backups_email                 = $quickstack::params::backups_email,
   $backups_ssh_key               = $quickstack::params::backups_ssh_key,
-  $backpus_sudoers_d		 = $quickstack::params::backups_sudoers_d,
+  $backups_sudoers_d		 = $quickstack::params::backups_sudoers_d,
   $backups_hour                  = $quickstack::params::backups_local_hour,
   $backups_min                   = $quickstack::params::backups_local_min, 
+  $backups_keep_days	    	 = $quickstack::params::backups_keep_days,
   $allow_resize_to_same_host     = $quickstack::params::allow_resize,
   $allow_migrate_to_same_host    = $quickstack::params::allow_migrate,
+  $repo_server                   = $quickstack::params::repo_server,
+  $elasticsearch_host            = $quickstack::params::elasticsearch_host
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl_endpoints") {
@@ -281,6 +285,8 @@ class quickstack::controller_common (
       $nova_sql_connection = "mysql://nova:${nova_db_password}@${mysql_host}/nova"
   }
 
+  class {'hosts':}
+
   class {'quickstack::db::mysql':
     mysql_root_password  => $mysql_root_password,
     keystone_db_password => $keystone_db_password,
@@ -302,6 +308,7 @@ class quickstack::controller_common (
 
     # Networking
     neutron                => str2bool_i("$neutron"),
+    require                => Class['hosts'],
   }
 
   class {'quickstack::amqp::server':
@@ -642,26 +649,26 @@ class quickstack::controller_common (
     }
   }
 
-#  class { 'quickstack::heat_controller':
-#    auth_encryption_key         => $heat_auth_encrypt_key,
-#    heat_cfn                    => $heat_cfn,
-#    heat_cloudwatch             => $heat_cloudwatch,
-#    heat_user_password          => $heat_user_password,
-#    heat_db_password            => $heat_db_password,
-#    controller_admin_host       => $controller_admin_host,
-#    controller_priv_host        => $controller_priv_host,
-#    controller_pub_host         => $controller_pub_host,
-#    mysql_host                  => $mysql_host,
-#    mysql_ca                    => $mysql_ca,
-#    ssl                         => $ssl,
-#    amqp_provider               => $amqp_provider,
-#    amqp_host                   => $amqp_host,
-#    amqp_port                   => $amqp_port,
-#    qpid_protocol               => $qpid_protocol,
-#    amqp_username               => $amqp_username,
-#    amqp_password               => $amqp_password,
-#    verbose                     => $verbose,
-#  }
+  class { 'quickstack::heat_controller':
+    auth_encryption_key         => $heat_auth_encrypt_key,
+    heat_cfn                    => $heat_cfn,
+    heat_cloudwatch             => $heat_cloudwatch,
+    heat_user_password          => $heat_user_password,
+    heat_db_password            => $heat_db_password,
+    controller_admin_host       => $controller_admin_host,
+    controller_priv_host        => $controller_priv_host,
+    controller_pub_host         => $controller_pub_host,
+    mysql_host                  => $mysql_host,
+    mysql_ca                    => $mysql_ca,
+    ssl                         => false, # Disable SSL for message queue
+    amqp_provider               => $amqp_provider,
+    amqp_host                   => $amqp_host,
+    amqp_port                   => $amqp_port,
+    qpid_protocol               => $qpid_protocol,
+    amqp_username               => $amqp_username,
+    amqp_password               => $amqp_password,
+    verbose                     => $verbose,
+  }
 
   # horizon packages
   package {'python-memcached':
@@ -775,6 +782,19 @@ class quickstack::controller_common (
     ensure => latest,
   }
 
+  package { "lsof":
+    ensure => latest,
+  }
+
+  package { "rsync":
+    ensure => latest,
+  }
+  package { "psmisc":
+    ensure => latest,
+  }
+  package { "NetworkManager":
+    ensure => present,
+  }
 #Customization for isntalling sensu
   class { '::sensu':
     sensu_plugin_name => 'sensu-plugin',
@@ -788,7 +808,6 @@ class quickstack::controller_common (
     subscriptions => $sensu_client_subscriptions_controller,
     client_keepalive      => $sensu_client_keepalive,
     plugins       => [
-       "puppet:///modules/sensu/plugins/check-ip-connectivity.sh",
        "puppet:///modules/sensu/plugins/check-mem.sh",
        "puppet:///modules/sensu/plugins/cpu-metrics.rb",
        "puppet:///modules/sensu/plugins/disk-usage-metrics.rb",
@@ -805,7 +824,10 @@ class quickstack::controller_common (
        "puppet:///modules/sensu/plugins/nova-hypervisor-metrics.py",
        "puppet:///modules/sensu/plugins/nova-server-state-metrics.py",
        "puppet:///modules/sensu/plugins/cpu-pcnt-usage-metrics.rb",
-       "puppet:///modules/sensu/plugins/disk-metrics.rb"
+       "puppet:///modules/sensu/plugins/disk-metrics.rb",
+       "puppet:///modules/sensu/plugins/vmstat-metrics.rb",
+       "puppet:///modules/sensu/plugins/iostat-metrics.rb"
+
     ]
   }
 
@@ -829,16 +851,53 @@ class quickstack::controller_common (
  
   # Installs scripts for automated backups
   class {'backups':
+    enabled        => $backups_enabled,
     user           => $backups_user, 
     script_src     => $backups_script_src,
     script_local   => $backups_script_local,
     backups_dir    => $backups_dir,
     log_file       => $backups_log,
+    verbose        => $backups_verbose,
     ssh_key        => $backups_ssh_key,
     sudoers_d      => $backups_sudoers_d,
     cron_email     => $backups_email,
     cron_hour      => $backups_hour,
     cron_min       => $backups_min,
+    keep_days      => $backups_keep_days,
+  }
+     
+
+  class { 'filebeat':
+    outputs => {
+      'logstash'  => {
+	'hosts'        =>  [$elasticsearch_host],
+	'loadbalance' => true
+      }
+    },
+    logging => {
+      'level' => "info"
+    }
   }
 
+   filebeat::prospector { 'generic':
+      paths => ["/var/log/*.log", "/var/log/secure", "/var/log/messages", "/var/log/ceph/*", "/var/log/nova/*", "/var/log/neutron/*", "/var/log/openvswitch/*", "/var/log/cinder/*", "/var/log/glance/*", "/var/log/horizon/*", "/var/log/httpd/*", "/var/log/keystone/*"]
+    }
+
+  class {'moc_openstack::cronjob':
+    repo_server => $repo_server,
+    randomwait  => 3,
+  }
+
+  class {'moc_openstack::suricata': }
+
+
+  if hiera('moc::clusterdeployment') == 'true' {
+    class {'::galera::server':
+      mysql_root_password => $mysql_root_password,
+      require => Class["moc_openstack::ha"],
+    }
+    class {'moc_openstack::ha':}
+  }
+
+  include sysstat
 }
