@@ -180,6 +180,8 @@ class quickstack::neutron::controller (
   $ca_file                       = $quickstack::params::root_ca_cert,
   $neutron_pub_url               = $quickstack::params::neutron_pub_url,
   $keystone_admin_url            = $quickstack::params::keystone_admin_url,
+  $auth_uri                      = $quickstack::params::auth_uri,
+  $identity_uri                  = $quickstack::params::identity_uri,
   $ovs_l2_population             = 'true',
 ) inherits quickstack::params {
 
@@ -390,12 +392,11 @@ class quickstack::neutron::controller (
   }
 
   class { '::neutron::server':
-    auth_host                        => $controller_priv_host,
-    auth_protocol                    => $auth_protocol,
-    auth_uri                         => $keystone_pub_url,
+    auth_uri                         => $auth_uri,
+    identity_uri                     => $identity_uri,
     auth_password                    => $neutron_user_password,
-    l3_ha                            => $l3_ha,
-    allow_automatic_l3agent_failover => $allow_automatic_l3agent_failover,
+    l3_ha                            => str2bool_i($l3_ha),
+    allow_automatic_l3agent_failover => str2bool_i($allow_automatic_l3agent_failover),
   }
 
   if $neutron_core_plugin == 'neutron.plugins.ml2.plugin.Ml2Plugin' {

@@ -113,6 +113,7 @@ class quickstack::compute_common (
   $admin_password               = $quickstack::params::admin_password,
   $enable_ceilometer            = $quickstack::params::enable_ceilometer,
   $controller_admin_host        = $quickstack::params::controller_admin_host,
+  $ceilometer_backend           = $quickstack::params::ceilometer_backend
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl") {
@@ -328,7 +329,7 @@ class quickstack::compute_common (
   if str2bool_i("$enable_ceilometer") {
     if str2bool_i("$ceilometer") {
       class { 'ceilometer':
-        metering_secret => $ceilometer_metering_secret,
+        telemetry_secret => $ceilometer_metering_secret,
         qpid_protocol   => $qpid_protocol,
         qpid_username   => $amqp_username,
         qpid_password   => $amqp_password,
@@ -338,7 +339,7 @@ class quickstack::compute_common (
         rabbit_userid   => $amqp_username,
         rabbit_password => $amqp_password,
         rabbit_use_ssl  => $amqp_ssl,
-        rpc_backend     => amqp_backend('ceilometer', $amqp_provider),
+        rpc_backend     => $ceilometer_backend,
         verbose         => $verbose,
       }
       class { 'ceilometer::agent::compute':
