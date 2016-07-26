@@ -74,6 +74,7 @@ class quickstack::sahara (
       ensure => present,
     }
     file { '/etc/sahara/policy.json':
+      notify => Service['openstack-sahara-all'], # only restarts if change
       ensure => file,
       owner  => 'root',
       group  => 'sahara',
