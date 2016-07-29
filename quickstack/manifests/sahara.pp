@@ -39,13 +39,16 @@ class quickstack::sahara (
   sahara_config {
     'DEFAULT/heat_enable_wait_condition': value => false;
     'DEFAULT/plugins':                    value => $sahara_plugins;
-    'DEFAULT/use_namespaces':             value => true;
+    'DEFAULT/use_namespaces':             value => false;
+    'DEFAULT/proxy_command':              value => "\'ip netns exec qdhcp-{network_id} nc {host} {port}\'";
     'DEFAULT/use_rootwrap':               value => true;
   }
   
-  sahara_config {
-    'ssl/key_file': value => $sahara_key;
-    'ssl/cert_file': value => $sahara_cert;
+  if str2bool_i($sahara_use_ssl) { 
+    sahara_config {
+      'ssl/key_file': value => $sahara_key;
+      'ssl/cert_file': value => $sahara_cert;
+    }
   }
 
   if str2bool_i($sahara_use_ssl) {
