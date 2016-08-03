@@ -207,6 +207,15 @@ class quickstack::sahara (
     path    => '/etc/openstack-dashboard/local_settings',
     line    => 'SAHARA_AUTO_IP_ALLOCATION_ENABLED=True'
   }
+
+  file { '/usr/lib/python2.7/site-packages/sahara/service/heat/templates.py':
+    notify => Service['openstack-sahara-all'], # only restarts if change
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => 'puppet:///modules/quickstack/sahara_templates.py',
+  }
   
   class { '::heat::keystone::domain':
     auth_url          => $keystone_auth_uri,
