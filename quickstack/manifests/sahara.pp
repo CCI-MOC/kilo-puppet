@@ -202,11 +202,11 @@ class quickstack::sahara (
     after   => "DEFAULT_EXTJS_LIB_URL = 'http://dev.sencha.com/deploy/ext-2.2.zip'"
   }
 
-  file_line { 'disable_floating':
-    notify  => Service['httpd'], # only restarts if a file changes
-    path    => '/etc/openstack-dashboard/local_settings',
-    line    => 'SAHARA_AUTO_IP_ALLOCATION_ENABLED=True'
-  }
+  #file_line { 'disable_floating':
+  #  notify  => Service['httpd'], # only restarts if a file changes
+  #  path    => '/etc/openstack-dashboard/local_settings',
+  #  line    => 'SAHARA_AUTO_IP_ALLOCATION_ENABLED=True'
+  #}
 
   file { '/usr/lib/python2.7/site-packages/sahara/service/heat/templates.py':
     notify => Service['openstack-sahara-all'], # only restarts if change
