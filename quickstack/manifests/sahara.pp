@@ -212,7 +212,7 @@ class quickstack::sahara (
   file_line { 'mr_job':
     notify  => Service['httpd'],
     path    => '/usr/share/openstack-dashboard/openstack_dashboard/contrib/sahara/content/data_processing/jobs/workflows/create.py',
-    line    => "                'data-jobtype-mapreduce': (\"Choose libraries\"),",
+    line    => "                'data-jobtype-mapreduce': _(\"Choose libraries\"),",
     after   => "                'data-jobtype-java': _\u0028\"Choose libraries\"\u0029,"
   }
 
