@@ -838,8 +838,14 @@ class quickstack::controller_common (
     rabbitmq_password     => $sensu_rabbitmq_password,
     rabbitmq_vhost        => '/sensu',
     subscriptions         => $sensu_client_subscriptions,
+    redact                => [ 'password' ],
+      client_custom       => {
+        neutron_agent     =>{   
+          password        => $admin_password,
+      },
+     },   
     client_keepalive      => $sensu_client_keepalive,
-    plugins               => [
+      plugins               => [
        "puppet:///modules/sensu/plugins/check-mem.sh",
        "puppet:///modules/sensu/plugins/cpu-metrics.rb",
        "puppet:///modules/sensu/plugins/disk-usage-metrics.rb",
