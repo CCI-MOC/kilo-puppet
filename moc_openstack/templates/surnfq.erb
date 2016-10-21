@@ -6,7 +6,7 @@ net4=<%= scope.function_hiera(['quickstack::params::surnet4']) %>
 net5=<%= scope.function_hiera(['ha::vip']) %>
 net6=<%= scope.function_hiera(['ha::pubipnode1']) %>
 net7=<%= scope.function_hiera(['ha::pubipnode2']) %>
-checksum="b9e44a2c7e3cd2d7eff8facecb6ab19e  -"
+sumfile=/tmp/surchecksum
 
 [ -f $fileoncotrollersonly ] && QNAME=INPUT || QNAME=FORWARD
 
@@ -29,28 +29,37 @@ if [ "$lnum" != "" ]; then
 fi
 
 
+[ -f $sumfile ] || touch $sumfile
+if [ $sumfile -ot $0 ]; then
+    rm -rf $sumfile
+    touch $sumfile
+fi
+
+checksum=`cat $sumfile`
 runningsum=`iptables -L suricata -n| md5sum`
+
+#echo $checksum
 #echo $runningsum
-##echo $checksum
-#
-#[ "$checksum" == "$runningsum" ] && exit
-#
-#iptables -F suricata
-#iptables -A suricata -s $net1 -j ACCEPT
-#iptables -A suricata -s $net2 -j ACCEPT
-#iptables -A suricata -s $net3 -j ACCEPT
-#iptables -A suricata -s $net4 -j ACCEPT
-#iptables -A suricata -s $net5 -j ACCEPT
-#iptables -A suricata -s $net6 -j ACCEPT
-#iptables -A suricata -s $net7 -j ACCEPT
-#iptables -A suricata -s 10.0.0.0/8 -d 10.0.0.0/8 -j RETURN
-#iptables -A suricata -s 10.0.0.0/8 -d 172.16.0.0/12 -j RETURN
-#iptables -A suricata -s 10.0.0.0/8 -d 192.168.0.0/16 -j RETURN
-#iptables -A suricata -s 172.16.0.0/12 -d 10.0.0.0/8 -j RETURN
-#iptables -A suricata -s 172.16.0.0/12 -d 172.16.0.0/12 -j RETURN
-#iptables -A suricata -s 172.16.0.0/12 -d 192.168.0.0/16 -j RETURN
-#iptables -A suricata -s 192.168.0.0/16 -d 10.0.0.0/8 -j RETURN
-#iptables -A suricata -s 192.168.0.0/16 -d 172.16.0.0/12 -j RETURN
-#iptables -A suricata -s 192.168.0.0/16 -d 192.168.0.0/16 -j RETURN
-#iptables -A suricata -m mark ! --mark 0x1/0x1 -j NFQUEUE
-#
+
+[ "$checksum" == "$runningsum" ] && exit
+
+iptables -F suricata
+iptables -A suricata -s $net1 -j ACCEPT
+iptables -A suricata -s $net2 -j ACCEPT
+iptables -A suricata -s $net3 -j ACCEPT
+iptables -A suricata -s $net4 -j ACCEPT
+iptables -A suricata -s $net5 -j ACCEPT
+iptables -A suricata -s $net6 -j ACCEPT
+iptables -A suricata -s $net7 -j ACCEPT
+iptables -A suricata -s 10.0.0.0/8 -d 10.0.0.0/8 -j RETURN
+iptables -A suricata -s 10.0.0.0/8 -d 172.16.0.0/12 -j RETURN
+iptables -A suricata -s 10.0.0.0/8 -d 192.168.0.0/16 -j RETURN
+iptables -A suricata -s 172.16.0.0/12 -d 10.0.0.0/8 -j RETURN
+iptables -A suricata -s 172.16.0.0/12 -d 172.16.0.0/12 -j RETURN
+iptables -A suricata -s 172.16.0.0/12 -d 192.168.0.0/16 -j RETURN
+iptables -A suricata -s 192.168.0.0/16 -d 10.0.0.0/8 -j RETURN
+iptables -A suricata -s 192.168.0.0/16 -d 172.16.0.0/12 -j RETURN
+iptables -A suricata -s 192.168.0.0/16 -d 192.168.0.0/16 -j RETURN
+iptables -A suricata -m mark ! --mark 0x1/0x1 -j NFQUEUE
+
+echo `iptables -L suricata -n| md5sum` > $sumfile
