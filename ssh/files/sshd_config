@@ -159,3 +159,5 @@ Subsystem	sftp	/usr/libexec/openssh/sftp-server
 #	X11Forwarding no
 #	AllowTcpForwarding no
 #	ForceCommand cvs server
+Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+MACs hmac-sha1,hmac-ripemd160
