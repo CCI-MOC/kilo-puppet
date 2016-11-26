@@ -73,7 +73,7 @@ class quickstack::sahara (
   }
 
   if str2bool_i($sahara_manage_policy) {
-    keystone_role { ['sahara_user', 'sahara_admin']:
+    keystone_role { ['sahara_admin']:
       ensure => present,
     }
     file { '/etc/sahara/policy.json':
@@ -85,60 +85,6 @@ class quickstack::sahara (
       source => 'puppet:///modules/quickstack/sahara_policy.json',
     }
     $base_dir = '/usr/share/openstack-dashboard/openstack_dashboard/contrib/sahara/content/data_processing/'
-    file_line { 'cluster':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}clusters/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after => "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
-    file_line { 'cluster_template':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}cluster_templates/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after =>  "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
-    file_line { 'data_plugin':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}data_plugins/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after =>  "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
-    file_line { 'data_source':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}data_sources/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after =>  "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
-    file_line { 'job_binary':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}job_binaries/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after =>  "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
-    file_line { 'job_execution':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}job_executions/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after =>  "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
-    file_line { 'job':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}jobs/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after =>  "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
-    file_line { 'nodegroup_template':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}nodegroup_templates/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after => "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
-    file_line { 'wizard':
-      notify  => Service['httpd'], # only restarts if change
-      path => "${base_dir}wizard/panel.py",
-      line => "    permissions = (('openstack.roles.sahara_user','openstack.roles.sahara_admin'),)",
-      after => "                    'openstack.services.data_processing'\u0029,\u0029"
-    }
     file_line { 'data_image_registry':
       notify  => Service['httpd'], # only restarts if change
       path => "${base_dir}data_image_registry/panel.py",
