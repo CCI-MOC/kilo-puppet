@@ -265,6 +265,15 @@ class quickstack::sahara (
     match  => '.*(Pig).*'
   }
 
+  file { '/usr/share/openstack-dashboard/openstack_dashboard/contrib/sahara/content/data_processing/clusters/views.py':
+    notify => Service['httpd'], # only restarts if change
+    ensure => file, 
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => 'puppet:///modules/quickstack/views_SaharaTime.py'
+  }
+
   class { '::heat::keystone::domain':
     auth_url          => $keystone_auth_uri,
     keystone_admin    => 'admin',
